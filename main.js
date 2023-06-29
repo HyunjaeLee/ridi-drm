@@ -140,6 +140,17 @@ async function decryptEpub(id, key, dstDirPath, env) {
     fs.writeFileSync(dstFilePath, await decryptContent(data, key));
 }
 
+async function decryptPdf(id, key, dstDirPath, env) {
+    const { book, libraryPath } = env;
+    const pdfFilePath = path.join(libraryPath, id, `${id}.pdf`);
+    const data = fs.readFileSync(pdfFilePath);
+    const dstFilePath = path.join(
+        dstDirPath,
+        `${id} ${getTitle(book, id)}.pdf`
+    );
+    fs.writeFileSync(dstFilePath, await decryptContent(data, key));
+}
+
 function decrypt(id, format, dstDirPath, env) {
     const { libraryPath } = env;
     const datFilePath = path.join(libraryPath, id, `${id}.dat`);
@@ -152,7 +163,7 @@ function decrypt(id, format, dstDirPath, env) {
             decryptEpub(id, key, dstDirPath, env);
             break;
         case "pdf":
-            console.log("PDF is not yet supported.");
+            decryptPdf(id, key, dstDirPath, env);
             break;
     }
 }
